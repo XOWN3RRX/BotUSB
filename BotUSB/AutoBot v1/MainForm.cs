@@ -2,18 +2,23 @@
 using System.Drawing;
 using System.Windows.Forms;
 using AutoBot_v1._Bot;
+using AutoBot_v1._Bot._JSON;
 using AutoBot_v1._Bot._Keys;
 using AutoBot_v1._Bot._TCPListener;
 using AutoBot_v1._CustomControls;
+using AutoBot_v1._Extension;
+using Newtonsoft.Json;
 
 namespace AutoBot_v1
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private TCPThread tcp;
         private LogView logView;
 
-        public Form1()
+        private ClientData clientData;
+
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -59,6 +64,10 @@ namespace AutoBot_v1
             tcp = new TCPThread();
             tcp.OnChangeStatus += Tcp_OnChangeStatus;
             tcp.OnTriggerServerAction = ClientAction;
+
+            logView.Log("IP : " + tcp.LocalAddress, LogView.LogType.Information);
+            logView.Log("Port : " + tcp.Port, LogView.LogType.Information);
+
             tcp.Run();
         }
 
@@ -66,26 +75,19 @@ namespace AutoBot_v1
         {
             try
             {
-                lblServerStatus.Invoke((MethodInvoker)delegate
-                {
-                    lblServerStatus.Text = sender?.ToString();
-                });
-
-                logView.Invoke((MethodInvoker)delegate
-                {
-                    logView.Log(sender?.ToString(), LogView.LogType.Information);
-                });
+                lblServerStatus.TextSafe(sender?.ToString());
+                logView.Log(sender?.ToString(), LogView.LogType.Information);
             }
             catch
             {
-                lblServerStatus.Text = "TCP SERVER EXCEPTION";
+                lblServerStatus.TextSafe("TCP SERVER EXCEPTION");
                 logView.Log("TCP SERVER EXCEPTION", LogView.LogType.Exception);
             }
         }
 
         private void AutobotConnected()
         {
-            this.lblStatus.Text = "USB Connected";
+            this.lblStatus.TextSafe("USB Connected");
             this.lblStatus.ForeColor = Color.Green;
 
             logView.Log("USB Connected", LogView.LogType.Information);
@@ -93,7 +95,7 @@ namespace AutoBot_v1
 
         private void AutobotDisconnected()
         {
-            this.lblStatus.Text = "USB Disconnected";
+            this.lblStatus.TextSafe("USB Disconnected");
             this.lblStatus.ForeColor = Color.Red;
 
             logView.Log("USB Disconnected", LogView.LogType.Information);
@@ -101,7 +103,7 @@ namespace AutoBot_v1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Bot.Instance.PressAndRelease(BotKeyEnum._AltL, BotKeyEnum.Tab);
+            Bot.Instance.PressAndRelease(KeyBotEnum._AltL, KeyBotEnum.Tab);
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -112,41 +114,54 @@ namespace AutoBot_v1
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Bot.Instance.Press(BotKeyEnum.CAPS);
+            Bot.Instance.Press(KeyBotEnum.CAPS);
         }
 
         private void ClientAction(string data)
         {
             try
             {
-                int keyCode = -1;
-                int.TryParse(data, out keyCode);
-
-                int index = Array.IndexOf(Enum.GetValues(typeof(BotKeyEnum)), (BotKeyEnum)keyCode);
-
-                if (index == -1)
+                try
                 {
-                    this.logView.Invoke((MethodInvoker)delegate
+                    clientData = null;
+                    clientData = JsonConvert.DeserializeObject<ClientData>(data);
+
+                    if (clientData.Message != null)
                     {
-                        logView.Log("Client send wrong data", LogView.LogType.Error);
-                    });
+                        Bot.Instance.PressMessage(clientData.Message);
+                    }
+                    else if (clientData.Keys.Length == 1)
+                    {
+                        Bot.Instance.PressAndRelease(clientData.Keys[0]);
+                    }
+                    else if (clientData.Keys.Length == 2)
+                    {
+                        Bot.Instance.PressAndRelease(clientData.Keys[0], clientData.Keys[1]);
+                    }
+                    else
+                    {
+                        logView.Log("UNDEFINED DATA", LogView.LogType.Error);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    logView.Log("Client send wrong data", LogView.LogType.Exception);
+                    logView.Log(ex.Message, LogView.LogType.Exception);
+                    logView.Log(data, LogView.LogType.Information);
                     return;
                 }
-
-                Bot.Instance.PressAndRelease((BotKeyEnum)keyCode);
             }
             catch
             {
-                this.lblServerStatus.Invoke((MethodInvoker)delegate
-                {
-                    lblServerStatus.Text = "Client send wrong data";
-                });
-
-                this.logView.Invoke((MethodInvoker)delegate
-                {
-                    logView.Log("Client send wrong data", LogView.LogType.Error);
-                });
+                this.lblServerStatus.TextSafe("Client send wrong data");
+                logView.Log("Client send wrong data", LogView.LogType.Error);
             }
+        }
+
+        private void btnInfo_Click(object sender, EventArgs e)
+        {
+            Info inf = new Info();
+            inf.Show();
         }
     }
 }

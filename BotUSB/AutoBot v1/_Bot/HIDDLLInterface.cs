@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AutoBot_v1
+namespace AutoBot_v1._Bot
 {
     internal sealed class HIDDLLInterface
     {

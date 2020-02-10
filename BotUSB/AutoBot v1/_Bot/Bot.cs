@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using AutoBot_v1._Bot._Keys;
 
@@ -43,7 +44,7 @@ namespace AutoBot_v1._Bot
         /// Alt 1
         /// 3, 0, 43, 0
         /// 3, 0, 102, 0
-        public void Press(BotKeyEnum key)
+        public void Press(KeyBotEnum key)
         {
             if (this.CONNECTED)
             {
@@ -52,14 +53,14 @@ namespace AutoBot_v1._Bot
             }
         }
 
-        public void PressAndRelease(BotKeyEnum key)
+        public void PressAndRelease(KeyBotEnum key)
         {
             if (this.CONNECTED)
             {
                 _bufferOut[2] = Convert.ToByte((int)key);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                Thread.Sleep(10);
-                _bufferOut[2] = Convert.ToByte((int)BotKeyEnum.NULL);
+                //Thread.Sleep(1);
+                _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
             }
         }
@@ -68,23 +69,51 @@ namespace AutoBot_v1._Bot
         {
             if (this.CONNECTED)
             {
-                _bufferOut[2] = Convert.ToByte((int)BotKeyEnum.NULL);
+                _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
             }
         }
 
-        public void PressAndRelease(BotKeyEnum key1, BotKeyEnum key2)
+        public void PressAndRelease(KeyBotEnum key1, KeyBotEnum key2)
         {
             if (this.CONNECTED)
             {
                 _bufferOut[2] = Convert.ToByte((int)key1);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                Thread.Sleep(10);
+                //Thread.Sleep(1);
                 _bufferOut[2] = Convert.ToByte((int)key2);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                Thread.Sleep(10);
-                _bufferOut[2] = Convert.ToByte(BotKeyEnum.NULL);
+                //Thread.Sleep(1);
+                _bufferOut[2] = Convert.ToByte(KeyBotEnum.NULL);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+            }
+        }
+
+        public void PressMessage(string message)
+        {
+            if (message.Length == 0)
+            {
+                return;
+            }
+
+            if (this.CONNECTED)
+            {
+                foreach (char item in message)
+                {
+                    Keyword key = KeywordParser.Keys.Where(x => x.Character == item).FirstOrDefault();
+
+                    if (key != null)
+                    {
+                        if (key.Keys.Length == 1)
+                        {
+                            Bot.Instance.PressAndRelease(key.Keys[0]);
+                        }
+                        else if( key.Keys.Length == 2)
+                        {
+                            Bot.Instance.PressAndRelease(key.Keys[0], key.Keys[1]);
+                        }
+                    }
+                }
             }
         }
     }

@@ -14,6 +14,30 @@ namespace AutoBot_v1._Bot._TCPListener
         private string _localAddress = "127.0.0.1";
         private int _port = 13000;
 
+        public string LocalAddress
+        {
+            get
+            {
+                return _localAddress;
+            }
+            set
+            {
+                _localAddress = value;
+            }
+        }
+
+        public int Port
+        {
+            get
+            {
+                return _port;
+            }
+            set
+            {
+                _port = value;
+            }
+        }
+
         public Action<string> OnTriggerServerAction { get; set; }
 
         public TCPThread()
@@ -66,6 +90,8 @@ namespace AutoBot_v1._Bot._TCPListener
                             data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
 
                             OnTriggerServerAction?.Invoke(data);
+
+                            data = null;
                         }
                     }
                     catch
@@ -76,7 +102,7 @@ namespace AutoBot_v1._Bot._TCPListener
                     client.Close();
                 }
             }
-            catch (SocketException e)
+            catch (Exception e)
             {
                 OnChangeStatus?.Invoke(string.Format("SocketException : {0}", e), EventArgs.Empty);
             }

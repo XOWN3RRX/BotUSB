@@ -111,7 +111,25 @@ namespace AutoBot_v1._CustomControls
                     break;
             }
 
-            Grid.Rows.Add(row);
+            if (this.InvokeRequired)
+            {
+                Grid.Invoke((MethodInvoker)delegate
+                {
+                    try
+                    {
+                        Grid.Rows.Add(row);
+                    }
+                    catch { }
+                });
+            }
+            else
+            {
+                try
+                {
+                    Grid.Rows.Add(row);
+                }
+                catch { }
+            }
         }
     }
 }

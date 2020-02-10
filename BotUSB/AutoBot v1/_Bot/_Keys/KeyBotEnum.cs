@@ -1,6 +1,6 @@
 ﻿namespace AutoBot_v1._Bot._Keys
 {
-    public enum BotKeyEnum
+    public enum KeyBotEnum
     {
         NULL = 0,
         MOUSE1,
