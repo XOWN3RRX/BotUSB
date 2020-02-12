@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using AutoBot_v1._Bot._Keys;
 
 namespace AutoBot_v1._Bot
@@ -59,7 +58,6 @@ namespace AutoBot_v1._Bot
             {
                 _bufferOut[2] = Convert.ToByte((int)key);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                //Thread.Sleep(1);
                 _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
             }
@@ -80,10 +78,8 @@ namespace AutoBot_v1._Bot
             {
                 _bufferOut[2] = Convert.ToByte((int)key1);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                //Thread.Sleep(1);
                 _bufferOut[2] = Convert.ToByte((int)key2);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                //Thread.Sleep(1);
                 _bufferOut[2] = Convert.ToByte(KeyBotEnum.NULL);
                 HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
             }

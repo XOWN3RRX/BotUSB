@@ -90,8 +90,6 @@ namespace AutoBot_v1._Bot._TCPListener
                             data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
 
                             OnTriggerServerAction?.Invoke(data);
-
-                            data = null;
                         }
                     }
                     catch
