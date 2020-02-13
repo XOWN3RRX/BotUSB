@@ -15,6 +15,7 @@ namespace AutoBot_v1
     {
         private TCPThread tcp;
         private LogView logView;
+        private BotQueue botQueue;
 
         private ClientData clientData;
 
@@ -69,6 +70,14 @@ namespace AutoBot_v1
             logView.Log("Port : " + tcp.Port, LogView.LogType.Information);
 
             tcp.Run();
+
+            botQueue = new BotQueue();
+            botQueue.OnErrorOccured += BotQueue_OnErrorOccured;
+        }
+
+        private void BotQueue_OnErrorOccured(string message, LogView.LogType logType)
+        {
+            logView.Log(message?.ToString(), logType);
         }
 
         private void Tcp_OnChangeStatus(object sender, EventArgs e)
@@ -110,6 +119,7 @@ namespace AutoBot_v1
         {
             HIDDLLInterface.DisconnectFromHID();
             tcp.StopServer();
+            botQueue.Stop();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -126,21 +136,9 @@ namespace AutoBot_v1
                     clientData = null;
                     clientData = JsonConvert.DeserializeObject<ClientData>(data);
 
-                    if (clientData.Message != null)
+                    if(clientData != null)
                     {
-                        Bot.Instance.PressMessage(clientData.Message);
-                    }
-                    else if (clientData.Keys.Length == 1)
-                    {
-                        Bot.Instance.PressAndRelease(clientData.Keys[0]);
-                    }
-                    else if (clientData.Keys.Length == 2)
-                    {
-                        Bot.Instance.PressAndRelease(clientData.Keys[0], clientData.Keys[1]);
-                    }
-                    else
-                    {
-                        logView.Log("UNDEFINED DATA", LogView.LogType.Error);
+                        botQueue.Queue.Enqueue(clientData);
                     }
                 }
                 catch(Exception ex)

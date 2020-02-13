@@ -59,6 +59,7 @@
     <Compile Include="Info.Designer.cs">
       <DependentUpon>Info.cs</DependentUpon>
     </Compile>
+    <Compile Include="_Bot\BotQueue.cs" />
     <Compile Include="_Bot\Keyword.cs" />
     <Compile Include="_Bot\KeywordParser.cs" />
     <Compile Include="_Bot\_JSON\ClientData.cs" />

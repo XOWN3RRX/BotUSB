@@ -1,0 +1,30 @@
+char sends[256];
+
+opensocket ("127.0.0.1", 13000);
+
+sleep(1000);
+sendString("Test message from Client");
+sleep(5000);
+
+
+function sendString(string message)
+{
+  string str = "{ 'Message': '" + message + "'}";
+  strcpy(#sends[0], str);
+  sendhtml(#sends[0], size(#sends[0]));
+}
+
+function sendKeys(int key1, int key2)
+{
+  string str = "{ 'Keys': [" + format(key1) + "," + format(key2) + "]}";
+  strcpy(#sends[0], str);
+  sendhtml(#sends[0], size(#sends[0]));
+}
+
+function sendKey(int key1)
+{
+  string str = "{ 'Keys': [" + format(key1) + "]}";
+  strcpy(#sends[0], str);
+  sendhtml(#sends[0], size(#sends[0]));
+}
+
