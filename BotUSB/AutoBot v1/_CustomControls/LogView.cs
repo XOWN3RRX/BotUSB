@@ -17,13 +17,11 @@ namespace AutoBot_v1._CustomControls
         {
             InitializeComponent();
             ID = 0;
-        }
-
-        private void LogView_Load(object sender, EventArgs e)
-        {
             LoadGridSettings();
             LoadColumns();
         }
+
+        private void LogView_Load(object sender, EventArgs e) { }
 
         private void LoadGridSettings()
         {

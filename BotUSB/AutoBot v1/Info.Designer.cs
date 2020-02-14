@@ -85,6 +85,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Info";
             this.Load += new System.EventHandler(this.Info_Load);
+            this.Shown += new System.EventHandler(this.Info_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.Grid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

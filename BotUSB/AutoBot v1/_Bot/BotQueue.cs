@@ -1,12 +1,7 @@
 ﻿using AutoBot_v1._Bot._JSON;
 using AutoBot_v1._CustomControls;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace AutoBot_v1._Bot
 {
@@ -26,7 +21,6 @@ namespace AutoBot_v1._Bot
         {
             get
             {
-                lock(locker)
                 {
                     return finish;
                 }
@@ -80,7 +74,7 @@ namespace AutoBot_v1._Bot
 
         public void Stop()
         {
-            this.finish = true;
+            this.Finish = true;
         }
     }
 }

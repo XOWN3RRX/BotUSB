@@ -37,6 +37,8 @@ namespace AutoBot_v1
                 Grid.Rows.Add(item.ToString(), (int)item);
                 dict.Add(item.ToString(), (int)item);
             }
+
+            this.textBox1.Focus();
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -60,6 +62,11 @@ namespace AutoBot_v1
                     Grid.Rows.Add(item.Key, item.Value);
                 }
             }
+        }
+
+        private void Info_Shown(object sender, EventArgs e)
+        {
+            textBox1.Focus();
         }
     }
 }

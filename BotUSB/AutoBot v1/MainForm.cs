@@ -8,6 +8,7 @@ using AutoBot_v1._Bot._Keys;
 using AutoBot_v1._Bot._TCPListener;
 using AutoBot_v1._CustomControls;
 using AutoBot_v1._Extension;
+using AutoBot_v1.Properties;
 using Newtonsoft.Json;
 
 namespace AutoBot_v1
@@ -65,6 +66,8 @@ namespace AutoBot_v1
             HIDDLLInterface.ConnectToHID(ref form);
 
             clientDataMany = new ClientData[] { };
+
+            trayToolStripMenuItem.Checked = Settings.Default.Settings_Tray;
 
             tcp = new TCPThread();
             tcp.OnChangeStatus += Tcp_OnChangeStatus;
@@ -141,21 +144,11 @@ namespace AutoBot_v1
 
                     data = "[" + data + "]";
 
-                    StringBuilder builder = new StringBuilder();
+                    data = data.Replace("}", "},");
+                    int index = data.LastIndexOf(',');
+                    data = data.Remove(index, 1);
 
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        if (i + 1 <= data.Length && data[i].Equals('}') && !data[i + 1].Equals(']'))
-                        {
-                            builder.Append("},");
-                        }
-                        else
-                        {
-                            builder.Append(data[i]);
-                        }
-                    }
-
-                    clientDataMany = JsonConvert.DeserializeObject<ClientData[]>(builder.ToString());
+                    clientDataMany = JsonConvert.DeserializeObject<ClientData[]>(data);
 
                     if (clientDataMany.Length > 0)
                     {
@@ -221,6 +214,60 @@ namespace AutoBot_v1
         {
             Info inf = new Info();
             inf.Show();
+        }
+
+        private void trayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = (sender as ToolStripMenuItem);
+
+            item.Checked = !item.Checked;
+
+            Settings.Default.Settings_Tray = item.Checked;
+            Settings.Default.Save();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (Settings.Default.Settings_Tray)
+            {
+                e.Cancel = true;
+                this.WindowState = FormWindowState.Minimized;
+                this.notifyIcon1.Visible = true;
+                this.ShowInTaskbar = false;
+            }
+        }
+
+        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        {
+            ShowApp();
+        }
+
+        private void ShowApp()
+        {
+            this.WindowState = FormWindowState.Normal;
+            this.notifyIcon1.Visible = false;
+            this.ShowInTaskbar = true;
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CloseApp();
+        }
+
+        private void CloseApp()
+        {
+            Settings.Default.Settings_Tray = false;
+            this.Close();
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowApp();
+        }
+
+        private void closeToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            CloseApp();
         }
     }
 }
