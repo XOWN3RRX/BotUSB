@@ -8,9 +8,10 @@ namespace AutoBot_v1._Bot
     public class BotQueue
     {
         private Thread thread;
-        public ConcurrentQueue<ClientData> Queue;
         private static object locker = new object();
         private ClientData data;
+
+        public ConcurrentQueue<ClientData> Queue;
 
         public delegate void OnErrorOccuredDelegate(string message, LogView.LogType logType);
         public event OnErrorOccuredDelegate OnErrorOccured;
