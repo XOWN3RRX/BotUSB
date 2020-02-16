@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using AutoBot_v1._Bot;
@@ -68,6 +69,9 @@ namespace AutoBot_v1
             clientDataMany = new ClientData[] { };
 
             trayToolStripMenuItem.Checked = Settings.Default.Settings_Tray;
+            topToolStripMenuItem.Checked = Settings.Default.Settings_Top;
+            lastToolStripMenuItem.Checked = Settings.Default.Settings_Last;
+            this.TopMost = Settings.Default.Settings_Top;
 
             tcp = new TCPThread();
             tcp.OnChangeStatus += Tcp_OnChangeStatus;
@@ -75,6 +79,7 @@ namespace AutoBot_v1
 
             logView.Log("IP : " + tcp.LocalAddress, LogView.LogType.Information);
             logView.Log("Port : " + tcp.Port, LogView.LogType.Information);
+            logView.Last = Settings.Default.Settings_Last;
 
             tcp.Run();
 
@@ -134,7 +139,7 @@ namespace AutoBot_v1
             Bot.Instance.Press(KeyBotEnum.CAPS);
         }
 
-        private bool ClienActionMultipleObjects(string data)
+        private void ClienActionMultipleObjects(string data)
         {
             try
             {
@@ -169,9 +174,7 @@ namespace AutoBot_v1
             {
                 logView.Log("Client multiple objects, not parsed...", LogView.LogType.Exception);
                 logView.Log(ex.Message, LogView.LogType.Exception);
-                return false;
             }
-            return true;
         }
 
         private void ClientAction(string data)
@@ -190,9 +193,12 @@ namespace AutoBot_v1
                 }
                 catch (Exception ex)
                 {
-                    bool isValid = ClienActionMultipleObjects(data);
-
-                    if (!isValid)
+                    int? count = data?.Where(x => x.Equals('{')).Count();
+                    if (count != null && count > 1)
+                    {
+                        ClienActionMultipleObjects(data);
+                    }
+                    else
                     {
                         logView.Log("Client send wrong data", LogView.LogType.Exception);
                         logView.Log(ex.Message, LogView.LogType.Exception);
@@ -268,6 +274,29 @@ namespace AutoBot_v1
         private void closeToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             CloseApp();
+        }
+
+        private void topToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.TopMost = !this.TopMost;
+            this.topToolStripMenuItem.Checked = this.TopMost;
+
+            Settings.Default.Settings_Top = this.TopMost;
+            Settings.Default.Save();
+        }
+
+        private void lastToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            logView.Last = !logView.Last;
+            lastToolStripMenuItem.Checked = logView.Last;
+
+            Settings.Default.Settings_Last = logView.Last;
+            Settings.Default.Save();
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            logView.Clear();
         }
     }
 }

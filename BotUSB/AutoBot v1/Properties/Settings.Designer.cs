@@ -34,5 +34,29 @@ namespace AutoBot_v1.Properties {
                 this["Settings_Tray"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Settings_Top {
+            get {
+                return ((bool)(this["Settings_Top"]));
+            }
+            set {
+                this["Settings_Top"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Settings_Last {
+            get {
+                return ((bool)(this["Settings_Last"]));
+            }
+            set {
+                this["Settings_Last"] = value;
+            }
+        }
     }
 }

@@ -46,7 +46,7 @@ namespace AutoBot_v1._Bot
         {
             while(!Finish)
             {
-                if(Queue.Count > 0)
+                if(!Queue.IsEmpty)
                 {
                     if(Queue.TryDequeue(out data))
                     {

@@ -7,6 +7,8 @@ namespace AutoBot_v1._CustomControls
     public partial class LogView : UserControl
     {
         private int ID;
+        public bool Last { get; set; }
+
         public enum LogType
         {
             Exception,
@@ -101,11 +103,13 @@ namespace AutoBot_v1._CustomControls
             {
                 case LogType.Exception:
                     row.DefaultCellStyle.BackColor = Color.FromArgb(117, 48, 48);
+                    row.DefaultCellStyle.ForeColor = Color.White;
                     break;
                 case LogType.Information:
                     break;
                 case LogType.Error:
                     row.DefaultCellStyle.BackColor = Color.FromArgb(130, 124, 56);
+                    row.DefaultCellStyle.ForeColor = Color.White;
                     break;
             }
 
@@ -116,6 +120,10 @@ namespace AutoBot_v1._CustomControls
                     try
                     {
                         Grid.Rows.Add(row);
+                        if (Last)
+                        {
+                            Grid.FirstDisplayedScrollingRowIndex = Grid.RowCount - 1;
+                        }
                     }
                     catch { }
                 });
@@ -125,8 +133,27 @@ namespace AutoBot_v1._CustomControls
                 try
                 {
                     Grid.Rows.Add(row);
+                    if (Last)
+                    {
+                        Grid.FirstDisplayedScrollingRowIndex = Grid.RowCount - 1;
+                    }
                 }
                 catch { }
+            }
+        }
+
+        internal void Clear()
+        {
+            if(Grid.InvokeRequired)
+            {
+                Grid.Invoke((MethodInvoker)delegate
+                {
+                    Grid.Rows.Clear();
+                });
+            }
+            else
+            {
+                Grid.Rows.Clear();
             }
         }
     }
