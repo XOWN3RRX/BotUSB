@@ -37,12 +37,6 @@ namespace AutoBot_v1._Bot
             _bufferOut[0] = 3;
         }
 
-        /// <summary>
-        /// BufferOut[2] = 0; // Keycode, tasta
-        /// <returns></returns>
-        /// Alt 1
-        /// 3, 0, 43, 0
-        /// 3, 0, 102, 0
         public void Press(KeyBotEnum key)
         {
             if (this.CONNECTED)
@@ -104,7 +98,7 @@ namespace AutoBot_v1._Bot
                         {
                             Bot.Instance.PressAndRelease(key.Keys[0]);
                         }
-                        else if( key.Keys.Length == 2)
+                        else if (key.Keys.Length == 2)
                         {
                             Bot.Instance.PressAndRelease(key.Keys[0], key.Keys[1]);
                         }

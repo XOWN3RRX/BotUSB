@@ -136,7 +136,7 @@ namespace AutoBot_v1
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Bot.Instance.Press(KeyBotEnum.CAPS);
+            Bot.Instance.PressAndRelease(KeyBotEnum._CAPS);
         }
 
         private void ClienActionMultipleObjects(string data)

@@ -3,8 +3,10 @@ char sends[256];
 opensocket ("127.0.0.1", 13000);
 
 sleep(1000);
-sendString("Test message from Client");
-sleep(5000);
+sendKeyPressed(111);
+sleep(1000);
+sendKey(0);
+sleep(1000);
 
 
 function sendString(string message)
@@ -28,3 +30,9 @@ function sendKey(int key1)
   sendhtml(#sends[0], size(#sends[0]));
 }
 
+function sendKeyPressed(int key1)
+{
+  string str = "{ 'Keys': [" + format(key1) + "], 'Pressed': 'true'}";
+  strcpy(#sends[0], str);
+  sendhtml(#sends[0], size(#sends[0]));
+}
