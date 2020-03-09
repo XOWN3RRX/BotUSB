@@ -81,10 +81,17 @@ namespace AutoBot_v1
             logView.Log("Port : " + tcp.Port, LogView.LogType.Information);
             logView.Last = Settings.Default.Settings_Last;
 
+            Bot.Instance.OnPingTrigger += Instance_OnPingTrigger;
+
             tcp.Run();
 
             botQueue = new BotQueue();
             botQueue.OnErrorOccured += BotQueue_OnErrorOccured;
+        }
+
+        private void Instance_OnPingTrigger(int ping)
+        {
+            lblPingStatus.TextSafe(ping.ToString() + " ms");
         }
 
         private void BotQueue_OnErrorOccured(string message, LogView.LogType logType)

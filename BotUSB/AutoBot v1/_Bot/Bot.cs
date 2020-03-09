@@ -8,6 +8,11 @@ namespace AutoBot_v1._Bot
     {
         private static Bot _instance;
         private static object _locker = new object();
+        private DateTime currentTime;
+        private TimeSpan elapsedTime;
+
+        public delegate void OnPingTriggerDelegate(int ping);
+        public event OnPingTriggerDelegate OnPingTrigger;
 
         private byte[] _bufferOut;
 
@@ -37,12 +42,24 @@ namespace AutoBot_v1._Bot
             _bufferOut[0] = 3;
         }
 
+        public void StopWatchAction(Action actionToExecute)
+        {
+            currentTime = DateTime.Now;
+            actionToExecute();
+            elapsedTime = DateTime.Now.Subtract(currentTime);
+
+            OnPingTrigger?.Invoke(elapsedTime.Milliseconds);
+        }
+
         public void Press(KeyBotEnum key)
         {
             if (this.CONNECTED)
             {
-                _bufferOut[2] = Convert.ToByte((int)key);
-                HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                StopWatchAction(() =>
+                {
+                    _bufferOut[2] = Convert.ToByte((int)key);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                });
             }
         }
 
@@ -50,10 +67,13 @@ namespace AutoBot_v1._Bot
         {
             if (this.CONNECTED)
             {
-                _bufferOut[2] = Convert.ToByte((int)key);
-                HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
-                HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                StopWatchAction(() =>
+                {
+                    _bufferOut[2] = Convert.ToByte((int)key);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                    _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                });
             }
         }
 
@@ -61,8 +81,11 @@ namespace AutoBot_v1._Bot
         {
             if (this.CONNECTED)
             {
-                _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
-                HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                StopWatchAction(() =>
+                {
+                    _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                });
             }
         }
 
@@ -70,12 +93,15 @@ namespace AutoBot_v1._Bot
         {
             if (this.CONNECTED)
             {
-                _bufferOut[2] = Convert.ToByte((int)key1);
-                HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                _bufferOut[2] = Convert.ToByte((int)key2);
-                HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                _bufferOut[2] = Convert.ToByte(KeyBotEnum.NULL);
-                HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                StopWatchAction(() =>
+                {
+                    _bufferOut[2] = Convert.ToByte((int)key1);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                    _bufferOut[2] = Convert.ToByte((int)key2);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                    _bufferOut[2] = Convert.ToByte(KeyBotEnum.NULL);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                });
             }
         }
 
@@ -94,14 +120,17 @@ namespace AutoBot_v1._Bot
 
                     if (key != null)
                     {
-                        if (key.Keys.Length == 1)
+                        StopWatchAction(() =>
                         {
-                            Bot.Instance.PressAndRelease(key.Keys[0]);
-                        }
-                        else if (key.Keys.Length == 2)
-                        {
-                            Bot.Instance.PressAndRelease(key.Keys[0], key.Keys[1]);
-                        }
+                            if (key.Keys.Length == 1)
+                            {
+                                Bot.Instance.PressAndRelease(key.Keys[0]);
+                            }
+                            else if (key.Keys.Length == 2)
+                            {
+                                Bot.Instance.PressAndRelease(key.Keys[0], key.Keys[1]);
+                            }
+                        });
                     }
                 }
             }
