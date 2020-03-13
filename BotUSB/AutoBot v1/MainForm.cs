@@ -23,6 +23,10 @@ namespace AutoBot_v1
         private ClientData clientData;
         private ClientData[] clientDataMany;
 
+        private MenuButton btnMenuDropDown;
+
+        private const string CUSTOM_BUTTON = "Custom";
+
         public MainForm()
         {
             InitializeComponent();
@@ -68,6 +72,8 @@ namespace AutoBot_v1
 
             clientDataMany = new ClientData[] { };
 
+            CreateDropDownButton();
+
             trayToolStripMenuItem.Checked = Settings.Default.Settings_Tray;
             topToolStripMenuItem.Checked = Settings.Default.Settings_Top;
             lastToolStripMenuItem.Checked = Settings.Default.Settings_Last;
@@ -89,9 +95,90 @@ namespace AutoBot_v1
             botQueue.OnErrorOccured += BotQueue_OnErrorOccured;
         }
 
+        private void CreateDropDownButton()
+        {
+            btnMenuDropDown = new MenuButton();
+            btnMenuDropDown.Location = new Point(89, 19);
+            btnMenuDropDown.Size = new Size(75, 23);
+            btnMenuDropDown.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            btnMenuDropDown.Text = "CAPS";
+            btnMenuDropDown.TabIndex = 3;
+            btnMenuDropDown.UseVisualStyleBackColor = true;
+            btnMenuDropDown.TextAlign = ContentAlignment.MiddleLeft;
+
+            btnMenuDropDown.Click += new System.EventHandler(MenuButtonClick);
+
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
+
+            Array keys = Enum.GetValues(typeof(KeyBotEnum));
+
+            AddItemsContextMenu("CAPS", (int)KeyBotEnum._CAPS, contextMenu, ContextMenu_Click);
+            AddItemsContextMenu("Win", (int)KeyBotEnum._WinL, contextMenu, ContextMenu_Click);
+            AddItemsContextMenu("PrintScreen", (int)KeyBotEnum._PrtSrc, contextMenu, ContextMenu_Click);
+            AddItemsContextMenu("Escape", (int)KeyBotEnum._Esc, contextMenu, ContextMenu_Click);
+
+            AddItemsContextMenu(CUSTOM_BUTTON, 0, contextMenu, ContextMenu_Click);
+
+            btnMenuDropDown.Menu = contextMenu;
+
+            groupBox3.Controls.Add(btnMenuDropDown);
+        }
+
+        private void AddItemsContextMenu(string name, int key, ContextMenuStrip parent, EventHandler eventTrigger)
+        {
+            ToolStripItem result = parent.Items.Add(name);
+            result.Tag = key;
+            result.Click += eventTrigger;
+
+            if (btnMenuDropDown.Tag == null)
+            {
+                btnMenuDropDown.Tag = key;
+            }
+        }
+
+        private void ContextMenu_Click(object sender, EventArgs e)
+        {
+            ToolStripItem result = (sender as ToolStripItem);
+            btnMenuDropDown.Text = result.Text;
+            btnMenuDropDown.Tag = result.Tag;
+
+            if (result.Text.Equals(CUSTOM_BUTTON))
+            {
+                customTextBox.Visible = true;
+            }
+            else
+            {
+                customTextBox.Visible = false;
+            }
+        }
+
+        private void MenuButtonClick(object sender, EventArgs eventArgs)
+        {
+            if ((sender as Button).Text.Equals(CUSTOM_BUTTON))
+            {
+                int result;
+                int.TryParse(customTextBox.Text, out result);
+
+                KeyBotEnum min = Enum.GetValues(typeof(KeyBotEnum)).Cast<KeyBotEnum>().Min();
+                KeyBotEnum max = Enum.GetValues(typeof(KeyBotEnum)).Cast<KeyBotEnum>().Max();
+
+                if (result >= (int)min && result <= (int)max)
+                {
+                    Bot.Instance.PressAndRelease((KeyBotEnum)result);
+                }
+            }
+            else
+            {
+                Bot.Instance.PressAndRelease((KeyBotEnum)(sender as Button).Tag);
+            }
+        }
+
         private void Instance_OnPingTrigger(int ping)
         {
-            lblPingStatus.TextSafe(ping.ToString() + " ms");
+            lblPingStatus.ExecuteSafe(() =>
+            {
+                lblPingStatus.Text = ping.ToString() + " ms";
+            });
         }
 
         private void BotQueue_OnErrorOccured(string message, LogView.LogType logType)
@@ -103,19 +190,28 @@ namespace AutoBot_v1
         {
             try
             {
-                lblServerStatus.TextSafe(sender?.ToString());
+                lblServerStatus.ExecuteSafe(() =>
+                {
+                    lblServerStatus.Text = sender?.ToString();
+                });
                 logView.Log(sender?.ToString(), LogView.LogType.Information);
             }
             catch
             {
-                lblServerStatus.TextSafe("TCP SERVER EXCEPTION");
+                lblServerStatus.ExecuteSafe(() =>
+                {
+                    lblServerStatus.Text = "TCP SERVER EXCEPTION";
+                });
                 logView.Log("TCP SERVER EXCEPTION", LogView.LogType.Exception);
             }
         }
 
         private void AutobotConnected()
         {
-            this.lblStatus.TextSafe("USB Connected");
+            this.lblStatus.ExecuteSafe(() =>
+            {
+                lblStatus.Text = "USB Connected";
+            });
             this.lblStatus.ForeColor = Color.Green;
 
             logView.Log("USB Connected", LogView.LogType.Information);
@@ -123,7 +219,10 @@ namespace AutoBot_v1
 
         private void AutobotDisconnected()
         {
-            this.lblStatus.TextSafe("USB Disconnected");
+            this.lblStatus.ExecuteSafe(() =>
+            {
+                lblStatus.Text = "USB Disconnected";
+            });
             this.lblStatus.ForeColor = Color.Red;
 
             logView.Log("USB Disconnected", LogView.LogType.Information);
@@ -218,7 +317,10 @@ namespace AutoBot_v1
             }
             catch
             {
-                this.lblServerStatus.TextSafe("Client send wrong data");
+                this.lblServerStatus.ExecuteSafe(() =>
+                {
+                    lblServerStatus.Text = "Client send wrong data";
+                });
                 logView.Log("Client send wrong data", LogView.LogType.Error);
             }
         }

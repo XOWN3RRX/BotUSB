@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoBot_v1._Extension;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -77,61 +78,46 @@ namespace AutoBot_v1._CustomControls
 
         public void Log(string message, LogType type)
         {
-            DataGridViewRow row = new DataGridViewRow();
-            row.Cells.Add(new DataGridViewTextBoxCell
-            {
-                Value = (++ID).ToString()
-            });
-
-            string typeString = type.ToString();
-            row.Cells.Add(new DataGridViewTextBoxCell
-            {
-                Value = typeString
-            });
-
-            row.Cells.Add(new DataGridViewTextBoxCell
-            {
-                Value = DateTime.Now
-            });
-
-            row.Cells.Add(new DataGridViewTextBoxCell
-            {
-                Value = message
-            });
-
-            switch (type)
-            {
-                case LogType.Exception:
-                    row.DefaultCellStyle.BackColor = Color.FromArgb(117, 48, 48);
-                    row.DefaultCellStyle.ForeColor = Color.White;
-                    break;
-                case LogType.Information:
-                    break;
-                case LogType.Error:
-                    row.DefaultCellStyle.BackColor = Color.FromArgb(130, 124, 56);
-                    row.DefaultCellStyle.ForeColor = Color.White;
-                    break;
-            }
-
-            if (this.InvokeRequired)
-            {
-                Grid.Invoke((MethodInvoker)delegate
-                {
-                    try
-                    {
-                        Grid.Rows.Add(row);
-                        if (Last)
-                        {
-                            Grid.FirstDisplayedScrollingRowIndex = Grid.RowCount - 1;
-                        }
-                    }
-                    catch { }
-                });
-            }
-            else
+            Grid.ExecuteSafe(() =>
             {
                 try
                 {
+                    DataGridViewRow row = new DataGridViewRow();
+                    row.Cells.Add(new DataGridViewTextBoxCell
+                    {
+                        Value = (++ID).ToString()
+                    });
+
+                    string typeString = type.ToString();
+                    row.Cells.Add(new DataGridViewTextBoxCell
+                    {
+                        Value = typeString
+                    });
+
+                    row.Cells.Add(new DataGridViewTextBoxCell
+                    {
+                        Value = DateTime.Now
+                    });
+
+                    row.Cells.Add(new DataGridViewTextBoxCell
+                    {
+                        Value = message
+                    });
+
+                    switch (type)
+                    {
+                        case LogType.Exception:
+                            row.DefaultCellStyle.BackColor = Color.FromArgb(117, 48, 48);
+                            row.DefaultCellStyle.ForeColor = Color.White;
+                            break;
+                        case LogType.Information:
+                            break;
+                        case LogType.Error:
+                            row.DefaultCellStyle.BackColor = Color.FromArgb(130, 124, 56);
+                            row.DefaultCellStyle.ForeColor = Color.White;
+                            break;
+                    }
+
                     Grid.Rows.Add(row);
                     if (Last)
                     {
@@ -139,22 +125,15 @@ namespace AutoBot_v1._CustomControls
                     }
                 }
                 catch { }
-            }
+            });
         }
 
-        internal void Clear()
+        public void Clear()
         {
-            if(Grid.InvokeRequired)
-            {
-                Grid.Invoke((MethodInvoker)delegate
-                {
-                    Grid.Rows.Clear();
-                });
-            }
-            else
+            Grid.ExecuteSafe(() =>
             {
                 Grid.Rows.Clear();
-            }
+            });
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using AutoBot_v1._Bot._Keys;
-
-namespace AutoBot_v1._Bot
+﻿namespace AutoBot_v1._Bot._Keys
 {
     public class Keyword
     {

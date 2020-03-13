@@ -60,8 +60,8 @@
       <DependentUpon>Info.cs</DependentUpon>
     </Compile>
     <Compile Include="_Bot\BotQueue.cs" />
-    <Compile Include="_Bot\Keyword.cs" />
-    <Compile Include="_Bot\KeywordParser.cs" />
+    <Compile Include="_Bot\_Keys\Keyword.cs" />
+    <Compile Include="_Bot\_Keys\KeywordParser.cs" />
     <Compile Include="_Bot\_JSON\ClientData.cs" />
     <Compile Include="_Bot\_Keys\KeyBotEnum.cs" />
     <Compile Include="MainForm.cs">
@@ -80,6 +80,9 @@
     </Compile>
     <Compile Include="_CustomControls\LogView.Designer.cs">
       <DependentUpon>LogView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_CustomControls\MenuButton.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="_Extension\Extension.cs" />
     <EmbeddedResource Include="Info.resx">
