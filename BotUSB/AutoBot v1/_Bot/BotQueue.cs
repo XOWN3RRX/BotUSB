@@ -28,7 +28,7 @@ namespace AutoBot_v1._Bot
             }
             set
             {
-                lock(locker)
+                lock (locker)
                 {
                     this.finish = value;
                 }
@@ -44,11 +44,11 @@ namespace AutoBot_v1._Bot
 
         public void Start()
         {
-            while(!Finish)
+            while (!Finish)
             {
-                if(!Queue.IsEmpty)
+                if (!Queue.IsEmpty)
                 {
-                    if(Queue.TryDequeue(out data))
+                    if (Queue.TryDequeue(out data))
                     {
                         if (data.Message != null)
                         {
@@ -58,13 +58,17 @@ namespace AutoBot_v1._Bot
                         {
                             Bot.Instance.PressAndRelease(data.Keys[0]);
                         }
-                        else if(data.Keys.Length == 1 && data.Pressed)
+                        else if (data.Keys.Length == 1 && data.Pressed)
                         {
                             Bot.Instance.Press(data.Keys[0]);
                         }
                         else if (data.Keys.Length == 2)
                         {
                             Bot.Instance.PressAndRelease(data.Keys[0], data.Keys[1]);
+                        }
+                        else if (data.Keys.Length == 3)
+                        {
+                            Bot.Instance.PressAndRelease(data.Keys[0], data.Keys[1], data.Keys[2]);
                         }
                         else
                         {

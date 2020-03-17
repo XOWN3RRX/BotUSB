@@ -42,10 +42,10 @@ namespace AutoBot_v1._Bot
             _bufferOut[0] = 3;
         }
 
-        public void StopWatchAction(Action actionToExecute)
+        public void ElapsedTimeAction(Action execute)
         {
             currentTime = DateTime.Now;
-            actionToExecute();
+            execute?.Invoke();
             elapsedTime = DateTime.Now.Subtract(currentTime);
 
             OnPingTrigger?.Invoke(elapsedTime.Milliseconds);
@@ -55,23 +55,9 @@ namespace AutoBot_v1._Bot
         {
             if (this.CONNECTED)
             {
-                StopWatchAction(() =>
+                ElapsedTimeAction(() =>
                 {
                     _bufferOut[2] = Convert.ToByte((int)key);
-                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                });
-            }
-        }
-
-        public void PressAndRelease(KeyBotEnum key)
-        {
-            if (this.CONNECTED)
-            {
-                StopWatchAction(() =>
-                {
-                    _bufferOut[2] = Convert.ToByte((int)key);
-                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
-                    _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
                     HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
                 });
             }
@@ -81,8 +67,44 @@ namespace AutoBot_v1._Bot
         {
             if (this.CONNECTED)
             {
-                StopWatchAction(() =>
+                ElapsedTimeAction(() =>
                 {
+                    _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                });
+            }
+        }
+
+        public void PressAndRelease(Keyword key)
+        {
+            if (this.CONNECTED)
+            {
+                if (key != null)
+                {
+                    if (key.Keys.Length == 1)
+                    {
+                        PressAndRelease(key.Keys[0]);
+                    }
+                    else if (key.Keys.Length == 2)
+                    {
+                        PressAndRelease(key.Keys[0], key.Keys[1]);
+                    }
+                    else if (key.Keys.Length == 3)
+                    {
+                        PressAndRelease(key.Keys[0], key.Keys[1], key.Keys[2]);
+                    }
+                }
+            }
+        }
+
+        public void PressAndRelease(KeyBotEnum key)
+        {
+            if (this.CONNECTED)
+            {
+                ElapsedTimeAction(() =>
+                {
+                    _bufferOut[2] = Convert.ToByte((int)key);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
                     _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
                     HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
                 });
@@ -93,11 +115,29 @@ namespace AutoBot_v1._Bot
         {
             if (this.CONNECTED)
             {
-                StopWatchAction(() =>
+                ElapsedTimeAction(() =>
                 {
                     _bufferOut[2] = Convert.ToByte((int)key1);
                     HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
                     _bufferOut[2] = Convert.ToByte((int)key2);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                    _bufferOut[2] = Convert.ToByte(KeyBotEnum.NULL);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                });
+            }
+        }
+
+        public void PressAndRelease(KeyBotEnum key1, KeyBotEnum key2, KeyBotEnum key3)
+        {
+            if (this.CONNECTED)
+            {
+                ElapsedTimeAction(() =>
+                {
+                    _bufferOut[2] = Convert.ToByte((int)key1);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                    _bufferOut[2] = Convert.ToByte((int)key2);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                    _bufferOut[2] = Convert.ToByte((int)key3);
                     HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
                     _bufferOut[2] = Convert.ToByte(KeyBotEnum.NULL);
                     HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
@@ -120,7 +160,7 @@ namespace AutoBot_v1._Bot
 
                     if (key != null)
                     {
-                        StopWatchAction(() =>
+                        ElapsedTimeAction(() =>
                         {
                             if (key.Keys.Length == 1)
                             {

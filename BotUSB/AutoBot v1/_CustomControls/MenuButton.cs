@@ -8,9 +8,34 @@ namespace AutoBot_v1._CustomControls
 {
     public class MenuButton : Button
     {
+        private ContextMenuStrip _menu;
+
         [DefaultValue(null), Browsable(true),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public ContextMenuStrip Menu { get; set; }
+        public ContextMenuStrip Menu
+        {
+            get
+            {
+                return _menu;
+            }
+            set
+            {
+                _menu = value;
+
+                if (_menu != null)
+                {
+                    _menu.ItemClicked += _menu_ItemClicked;
+                }
+            }
+        }
+
+        private void _menu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (e.ClickedItem != null)
+            {
+                this.Text = e.ClickedItem.Text;
+            }
+        }
 
         [DefaultValue(20), Browsable(true),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]

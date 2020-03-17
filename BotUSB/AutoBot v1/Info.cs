@@ -9,9 +9,12 @@ namespace AutoBot_v1
     public partial class Info : Form
     {
         private Dictionary<string, int> dict;
-        public Info()
+        private MainForm _main;
+
+        public Info(MainForm main)
         {
             InitializeComponent();
+            this._main = main;
         }
 
         private void Info_Load(object sender, EventArgs e)
@@ -67,6 +70,15 @@ namespace AutoBot_v1
         private void Info_Shown(object sender, EventArgs e)
         {
             textBox1.Focus();
+        }
+
+        private void Grid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            try
+            {
+                this._main.IncomingKey(Grid.Rows[e.RowIndex].Cells[1].Value.ToString());
+            }
+            catch (Exception ex) { }
         }
     }
 }

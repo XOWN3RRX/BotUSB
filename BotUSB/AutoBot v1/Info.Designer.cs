@@ -51,6 +51,7 @@
             this.Grid.RowHeadersVisible = false;
             this.Grid.Size = new System.Drawing.Size(337, 384);
             this.Grid.TabIndex = 0;
+            this.Grid.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.Grid_CellMouseDoubleClick);
             // 
             // ColumnName
             // 

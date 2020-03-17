@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutoBot_v1._Bot;
 using AutoBot_v1._Bot._JSON;
@@ -24,6 +26,9 @@ namespace AutoBot_v1
         private ClientData[] clientDataMany;
 
         private MenuButton btnMenuDropDown;
+
+        private object locker = new object();
+        private bool tested = false;
 
         private const string CUSTOM_BUTTON = "Custom";
 
@@ -49,6 +54,7 @@ namespace AutoBot_v1
                 HIDDLLInterface.hidSetReadNotify(HIDDLLInterface.hidGetHandle(5638, 6536), false);
                 AutobotDisconnected();
                 Bot.Instance.CONNECTED = false;
+                tested = false;
             }
         }
 
@@ -73,6 +79,7 @@ namespace AutoBot_v1
             clientDataMany = new ClientData[] { };
 
             CreateDropDownButton();
+            CreateDropDownButtonCombinations();
 
             trayToolStripMenuItem.Checked = Settings.Default.Settings_Tray;
             topToolStripMenuItem.Checked = Settings.Default.Settings_Top;
@@ -95,6 +102,22 @@ namespace AutoBot_v1
             botQueue.OnErrorOccured += BotQueue_OnErrorOccured;
         }
 
+        private void CreateDropDownButtonCombinations()
+        {
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
+
+            btnCombination.Text = "ALT+TAB";
+            btnCombination.Tag = new Keyword((char)0, KeyBotEnum._AltL, KeyBotEnum._Tab);
+            AddItemsContextMenu("ALT+TAB", new Keyword((char)0, KeyBotEnum._AltL, KeyBotEnum._Tab), contextMenu, ContextMenuCombinations_Click);
+            AddItemsContextMenu("Win+D", new Keyword((char)0, KeyBotEnum._WinL, KeyBotEnum._D), contextMenu, ContextMenuCombinations_Click);
+            AddItemsContextMenu("Win+Tab", new Keyword((char)0, KeyBotEnum._WinL, KeyBotEnum._Tab), contextMenu, ContextMenuCombinations_Click);
+            AddItemsContextMenu("Win+R", new Keyword((char)0, KeyBotEnum._WinL, KeyBotEnum._R), contextMenu, ContextMenuCombinations_Click);
+            AddItemsContextMenu("Ctrl+Esc", new Keyword((char)0, KeyBotEnum._CtrlL, KeyBotEnum._Esc), contextMenu, ContextMenuCombinations_Click);
+            AddItemsContextMenu("Ctrl+Alt+Del", new Keyword((char)0, KeyBotEnum._CtrlL, KeyBotEnum._AltL, KeyBotEnum._Delete), contextMenu, ContextMenuCombinations_Click);
+
+            btnCombination.Menu = contextMenu;
+        }
+
         private void CreateDropDownButton()
         {
             btnMenuDropDown = new MenuButton();
@@ -112,6 +135,7 @@ namespace AutoBot_v1
 
             Array keys = Enum.GetValues(typeof(KeyBotEnum));
 
+            btnMenuDropDown.Tag = (int)KeyBotEnum._CAPS;
             AddItemsContextMenu("CAPS", (int)KeyBotEnum._CAPS, contextMenu, ContextMenu_Click);
             AddItemsContextMenu("Win", (int)KeyBotEnum._WinL, contextMenu, ContextMenu_Click);
             AddItemsContextMenu("PrintScreen", (int)KeyBotEnum._PrtSrc, contextMenu, ContextMenu_Click);
@@ -124,22 +148,22 @@ namespace AutoBot_v1
             groupBox3.Controls.Add(btnMenuDropDown);
         }
 
-        private void AddItemsContextMenu(string name, int key, ContextMenuStrip parent, EventHandler eventTrigger)
+        private void AddItemsContextMenu(string name, object key, ContextMenuStrip parent, EventHandler eventTrigger)
         {
             ToolStripItem result = parent.Items.Add(name);
             result.Tag = key;
             result.Click += eventTrigger;
+        }
 
-            if (btnMenuDropDown.Tag == null)
-            {
-                btnMenuDropDown.Tag = key;
-            }
+        private void ContextMenuCombinations_Click(object sender, EventArgs e)
+        {
+            ToolStripItem result = (sender as ToolStripItem);
+            btnCombination.Tag = result.Tag;
         }
 
         private void ContextMenu_Click(object sender, EventArgs e)
         {
             ToolStripItem result = (sender as ToolStripItem);
-            btnMenuDropDown.Text = result.Text;
             btnMenuDropDown.Tag = result.Tag;
 
             if (result.Text.Equals(CUSTOM_BUTTON))
@@ -210,11 +234,58 @@ namespace AutoBot_v1
         {
             this.lblStatus.ExecuteSafe(() =>
             {
-                lblStatus.Text = "USB Connected";
+                lblStatus.Text = "USB Connected, usb driver test...";
+                lblStatus.ForeColor = Color.Gray;
             });
-            this.lblStatus.ForeColor = Color.Green;
 
             logView.Log("USB Connected", LogView.LogType.Information);
+
+            TestDriver();
+        }
+
+        private void TestDriver()
+        {
+            try
+            {
+                Task.Run(() =>
+                {
+                    lock (locker)
+                    {
+                        if (!tested)
+                        {
+                            Thread.Sleep(2000);
+
+                            DateTime dt = DateTime.Now;
+                            Bot.Instance.PressAndRelease(KeyBotEnum.NULL);
+                            double elapsed = DateTime.Now.Subtract(dt).Milliseconds;
+
+                            if (elapsed < 10)
+                            {
+                                this.lblStatus.ExecuteSafe(() =>
+                                {
+                                    lblStatus.Text = "USB Connected, usb driver fail";
+                                    lblStatus.ForeColor = Color.Red;
+                                });
+                            }
+                            else
+                            {
+                                this.lblStatus.ExecuteSafe(() =>
+                                {
+                                    lblStatus.Text = "USB Connected, usb driver passed";
+                                    lblStatus.ForeColor = Color.Green;
+                                });
+                            }
+
+                            tested = true;
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                logView.Log("TestDriver Exception", LogView.LogType.Exception);
+                logView.Log(ex.Message, LogView.LogType.Exception);
+            }
         }
 
         private void AutobotDisconnected()
@@ -222,8 +293,8 @@ namespace AutoBot_v1
             this.lblStatus.ExecuteSafe(() =>
             {
                 lblStatus.Text = "USB Disconnected";
+                lblStatus.ForeColor = Color.Red;
             });
-            this.lblStatus.ForeColor = Color.Red;
 
             logView.Log("USB Disconnected", LogView.LogType.Information);
         }
@@ -327,8 +398,20 @@ namespace AutoBot_v1
 
         private void btnInfo_Click(object sender, EventArgs e)
         {
-            Info inf = new Info();
+            Info inf = new Info(this);
             inf.Show();
+        }
+
+        public void IncomingKey(string key)
+        {
+            try
+            {
+                customTextBox.ExecuteSafe(() =>
+                {
+                    customTextBox.Text = key;
+                });
+            }
+            catch (Exception ex) { }
         }
 
         private void trayToolStripMenuItem_Click(object sender, EventArgs e)
@@ -406,6 +489,36 @@ namespace AutoBot_v1
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
             logView.Clear();
+        }
+
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Bot.Instance.CONNECTED)
+            {
+                this.lblStatus.ExecuteSafe(() =>
+                {
+                    lblStatus.Text = "USB Connected, usb driver test...";
+                    this.lblStatus.ForeColor = Color.Gray;
+                });
+
+                tested = false;
+                TestDriver();
+            }
+            else
+            {
+                MessageBox.Show("USB is not connected...");
+            }
+        }
+
+        private void btnCombination_Click(object sender, EventArgs e)
+        {
+            if (btnCombination.Tag != null)
+            {
+                if (btnCombination.Tag is Keyword keys)
+                {
+                    Bot.Instance.PressAndRelease(keys);
+                }
+            }
         }
     }
 }

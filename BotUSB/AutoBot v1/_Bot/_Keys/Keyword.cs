@@ -18,5 +18,11 @@
             this.Character = chr;
             this.Keys = new KeyBotEnum[] { key1, key2 };
         }
+
+        public Keyword(char chr, KeyBotEnum key1, KeyBotEnum key2, KeyBotEnum key3)
+        {
+            this.Character = chr;
+            this.Keys = new KeyBotEnum[] { key1, key2, key3 };
+        }
     }
 }

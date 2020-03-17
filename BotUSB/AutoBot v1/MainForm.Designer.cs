@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.button1 = new System.Windows.Forms.Button();
             this.lblServerStatus = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -41,6 +40,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.logPanel = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.customTextBox = new System.Windows.Forms.TextBox();
             this.btnInfo = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,27 +50,19 @@
             this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.driverToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.customTextBox = new System.Windows.Forms.TextBox();
+            this.btnCombination = new AutoBot_v1._CustomControls.MenuButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(8, 19);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "ALT+TAB";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // lblServerStatus
             // 
@@ -180,15 +172,24 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.btnCombination);
             this.groupBox3.Controls.Add(this.customTextBox);
             this.groupBox3.Controls.Add(this.btnInfo);
-            this.groupBox3.Controls.Add(this.button1);
             this.groupBox3.Location = new System.Drawing.Point(6, 338);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(387, 51);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Test keys";
+            // 
+            // customTextBox
+            // 
+            this.customTextBox.Location = new System.Drawing.Point(170, 21);
+            this.customTextBox.MaxLength = 3;
+            this.customTextBox.Name = "customTextBox";
+            this.customTextBox.Size = new System.Drawing.Size(62, 20);
+            this.customTextBox.TabIndex = 5;
+            this.customTextBox.Visible = false;
             // 
             // btnInfo
             // 
@@ -205,7 +206,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.listToolStripMenuItem});
+            this.listToolStripMenuItem,
+            this.driverToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(399, 24);
@@ -219,8 +221,8 @@
             this.topToolStripMenuItem,
             this.closeToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.fileToolStripMenuItem.Text = "Options";
             // 
             // trayToolStripMenuItem
             // 
@@ -249,22 +251,37 @@
             this.lastToolStripMenuItem,
             this.clearToolStripMenuItem});
             this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-            this.listToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.listToolStripMenuItem.Text = "List";
+            this.listToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.listToolStripMenuItem.Text = "Logs";
             // 
             // lastToolStripMenuItem
             // 
             this.lastToolStripMenuItem.Name = "lastToolStripMenuItem";
-            this.lastToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-            this.lastToolStripMenuItem.Text = "Last";
+            this.lastToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.lastToolStripMenuItem.Text = "Show Last";
             this.lastToolStripMenuItem.Click += new System.EventHandler(this.lastToolStripMenuItem_Click);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-            this.clearToolStripMenuItem.Text = "Clear";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.clearToolStripMenuItem.Text = "Clear Logs";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+            // 
+            // driverToolStripMenuItem
+            // 
+            this.driverToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.testToolStripMenuItem});
+            this.driverToolStripMenuItem.Name = "driverToolStripMenuItem";
+            this.driverToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.driverToolStripMenuItem.Text = "Driver";
+            // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
+            this.testToolStripMenuItem.Text = "Test";
+            this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
             // 
             // notifyIcon1
             // 
@@ -295,14 +312,16 @@
             this.closeToolStripMenuItem1.Text = "Close";
             this.closeToolStripMenuItem1.Click += new System.EventHandler(this.closeToolStripMenuItem1_Click);
             // 
-            // customTextBox
+            // btnCombination
             // 
-            this.customTextBox.Location = new System.Drawing.Point(170, 21);
-            this.customTextBox.MaxLength = 3;
-            this.customTextBox.Name = "customTextBox";
-            this.customTextBox.Size = new System.Drawing.Size(62, 20);
-            this.customTextBox.TabIndex = 5;
-            this.customTextBox.Visible = false;
+            this.btnCombination.Location = new System.Drawing.Point(8, 19);
+            this.btnCombination.Name = "btnCombination";
+            this.btnCombination.Size = new System.Drawing.Size(75, 23);
+            this.btnCombination.TabIndex = 8;
+            this.btnCombination.Text = "Keys";
+            this.btnCombination.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCombination.UseVisualStyleBackColor = true;
+            this.btnCombination.Click += new System.EventHandler(this.btnCombination_Click);
             // 
             // MainForm
             // 
@@ -336,7 +355,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label lblServerStatus;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -361,6 +379,9 @@
         private System.Windows.Forms.Label lblPingStatus;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.TextBox customTextBox;
+        private System.Windows.Forms.ToolStripMenuItem driverToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+        private _CustomControls.MenuButton btnCombination;
     }
 }
 
