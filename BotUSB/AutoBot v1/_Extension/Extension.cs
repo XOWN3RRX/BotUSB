@@ -11,12 +11,12 @@ namespace AutoBot_v1._Extension
             {
                 control.Invoke((MethodInvoker)delegate
                 {
-                    action();
+                    action?.Invoke();
                 });
             }
             else
             {
-                action();
+                action?.Invoke();
             }
         }
     }

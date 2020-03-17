@@ -84,6 +84,7 @@ namespace AutoBot_v1
             trayToolStripMenuItem.Checked = Settings.Default.Settings_Tray;
             topToolStripMenuItem.Checked = Settings.Default.Settings_Top;
             lastToolStripMenuItem.Checked = Settings.Default.Settings_Last;
+            showReceivedDataToolStripMenuItem.Checked = Settings.Default.Settings_Show_Keys;
             this.TopMost = Settings.Default.Settings_Top;
 
             tcp = new TCPThread();
@@ -253,7 +254,7 @@ namespace AutoBot_v1
                     {
                         if (!tested)
                         {
-                            Thread.Sleep(2000);
+                            Thread.Sleep(1500);
 
                             DateTime dt = DateTime.Now;
                             Bot.Instance.PressAndRelease(KeyBotEnum.NULL);
@@ -337,6 +338,11 @@ namespace AutoBot_v1
                         foreach (ClientData item in clientDataMany)
                         {
                             botQueue.Queue.Enqueue(item);
+
+                            if (showReceivedDataToolStripMenuItem.Checked)
+                            {
+                                logView.Log(item.ToString(), LogView.LogType.Information);
+                            }
                         }
                     }
 
@@ -366,6 +372,11 @@ namespace AutoBot_v1
                     if (clientData != null)
                     {
                         botQueue.Queue.Enqueue(clientData);
+
+                        if (showReceivedDataToolStripMenuItem.Checked)
+                        {
+                            logView.Log(clientData.ToString(), LogView.LogType.Information);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -519,6 +530,13 @@ namespace AutoBot_v1
                     Bot.Instance.PressAndRelease(keys);
                 }
             }
+        }
+
+        private void showReceivedDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showReceivedDataToolStripMenuItem.Checked = !showReceivedDataToolStripMenuItem.Checked;
+            Settings.Default.Settings_Show_Keys = showReceivedDataToolStripMenuItem.Checked;
+            Settings.Default.Save();
         }
     }
 }

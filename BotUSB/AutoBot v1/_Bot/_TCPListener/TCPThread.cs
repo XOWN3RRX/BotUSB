@@ -16,26 +16,14 @@ namespace AutoBot_v1._Bot._TCPListener
 
         public string LocalAddress
         {
-            get
-            {
-                return _localAddress;
-            }
-            set
-            {
-                _localAddress = value;
-            }
+            get => _localAddress;
+            set => _localAddress = value;
         }
 
         public int Port
         {
-            get
-            {
-                return _port;
-            }
-            set
-            {
-                _port = value;
-            }
+            get => _port;
+            set => _port = value;
         }
 
         public Action<string> OnTriggerServerAction { get; set; }

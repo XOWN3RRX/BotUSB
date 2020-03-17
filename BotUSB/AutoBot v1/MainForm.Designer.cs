@@ -56,6 +56,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.showReceivedDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCombination = new AutoBot_v1._CustomControls.MenuButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -249,6 +250,7 @@
             // 
             this.listToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lastToolStripMenuItem,
+            this.showReceivedDataToolStripMenuItem,
             this.clearToolStripMenuItem});
             this.listToolStripMenuItem.Name = "listToolStripMenuItem";
             this.listToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -257,14 +259,14 @@
             // lastToolStripMenuItem
             // 
             this.lastToolStripMenuItem.Name = "lastToolStripMenuItem";
-            this.lastToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.lastToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.lastToolStripMenuItem.Text = "Show Last";
             this.lastToolStripMenuItem.Click += new System.EventHandler(this.lastToolStripMenuItem_Click);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.clearToolStripMenuItem.Text = "Clear Logs";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
@@ -311,6 +313,13 @@
             this.closeToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
             this.closeToolStripMenuItem1.Text = "Close";
             this.closeToolStripMenuItem1.Click += new System.EventHandler(this.closeToolStripMenuItem1_Click);
+            // 
+            // showReceivedDataToolStripMenuItem
+            // 
+            this.showReceivedDataToolStripMenuItem.Name = "showReceivedDataToolStripMenuItem";
+            this.showReceivedDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showReceivedDataToolStripMenuItem.Text = "Show Received Data";
+            this.showReceivedDataToolStripMenuItem.Click += new System.EventHandler(this.showReceivedDataToolStripMenuItem_Click);
             // 
             // btnCombination
             // 
@@ -382,6 +391,7 @@
         private System.Windows.Forms.ToolStripMenuItem driverToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
         private _CustomControls.MenuButton btnCombination;
+        private System.Windows.Forms.ToolStripMenuItem showReceivedDataToolStripMenuItem;
     }
 }
 

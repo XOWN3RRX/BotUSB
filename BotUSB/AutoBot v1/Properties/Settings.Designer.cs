@@ -58,5 +58,17 @@ namespace AutoBot_v1.Properties {
                 this["Settings_Last"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Settings_Show_Keys {
+            get {
+                return ((bool)(this["Settings_Show_Keys"]));
+            }
+            set {
+                this["Settings_Show_Keys"] = value;
+            }
+        }
     }
 }

@@ -77,7 +77,7 @@ namespace AutoBot_v1._Bot
                     }
                 }
 
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
         }
 
