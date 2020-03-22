@@ -1,0 +1,75 @@
+int col, xek, yek;
+int col_pix, X_pix, Y_pix;
+
+int ESCAPE = 148;
+int F1 = 58;
+int F2 = 59;
+
+sleep(2000);
+
+char sends[256];
+
+opensocket ("127.0.0.1", 13000);
+
+nastroit();
+
+while(1 == 1)
+{   
+   // search mob
+   while(getcolor(X_pix, Y_pix) != col_pix)
+   {
+       sendKey(ESCAPE);
+       sendKey(F2);
+       sleep(400);
+   }
+
+   // attack
+   while(getcolor(X_pix, Y_pix) == col_pix)
+   {
+       sendKey(F1);
+       sleep(200);
+   }
+}
+
+function nastroit()
+{
+  getdisplay(col, xek, yek);
+  xek=xek/2-200; yek=yek/2;
+
+  textbkcolor (0,255);
+  textout(0, xek, yek, "Start mob HP", 0);
+  e: if (getkeystate(192)==0) {sleep(50); goto e;}
+  getmouse(X_pix, Y_pix);
+  q: if (getcolor(X_pix, Y_pix)==getcolor(X_pix-1, Y_pix)) {X_pix--; goto q;}
+  col_pix=getcolor(X_pix, Y_pix);
+  pause (1000);
+  disabletextout(0);
+}
+
+function sendString(string message)
+{
+  string str = "{ 'Message': '" + message + "'}";
+  strcpy(#sends[0], str);
+  sendhtml(#sends[0], size(#sends[0]));
+}
+
+function sendKeys(int key1, int key2)
+{
+  string str = "{ 'Keys': [" + format(key1) + "," + format(key2) + "]}";
+  strcpy(#sends[0], str);
+  sendhtml(#sends[0], size(#sends[0]));
+}
+
+function sendKey(int key1)
+{
+  string str = "{ 'Keys': [" + format(key1) + "]}";
+  strcpy(#sends[0], str);
+  sendhtml(#sends[0], size(#sends[0]));
+}
+
+function sendKeyPressed(int key1)
+{
+  string str = "{ 'Keys': [" + format(key1) + "], 'Pressed': 'true'}";
+  strcpy(#sends[0], str);
+  sendhtml(#sends[0], size(#sends[0]));
+}
