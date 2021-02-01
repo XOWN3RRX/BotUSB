@@ -69,6 +69,7 @@ namespace AutoBot_v1._Bot
             {
                 ElapsedTimeAction(() =>
                 {
+                    _bufferOut[3] = 0;
                     _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
                     HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
                 });
@@ -103,9 +104,29 @@ namespace AutoBot_v1._Bot
             {
                 ElapsedTimeAction(() =>
                 {
+                    _bufferOut[3] = 0;
                     _bufferOut[2] = Convert.ToByte((int)key);
                     HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
                     _bufferOut[2] = Convert.ToByte((int)KeyBotEnum.NULL);
+                    HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
+                });
+            }
+        }
+
+        public void Press(KeyBotEnum key, int repeat)
+        {
+            if (this.CONNECTED)
+            {
+                ElapsedTimeAction(() =>
+                {
+                    if (repeat > Byte.MaxValue)
+                    {
+                        repeat = Byte.MaxValue - 1;
+                    }
+
+                    _bufferOut[3] = Convert.ToByte(repeat);
+
+                    _bufferOut[2] = Convert.ToByte((int)key);
                     HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
                 });
             }
@@ -117,6 +138,7 @@ namespace AutoBot_v1._Bot
             {
                 ElapsedTimeAction(() =>
                 {
+                    _bufferOut[3] = 0;
                     _bufferOut[2] = Convert.ToByte((int)key1);
                     HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
                     _bufferOut[2] = Convert.ToByte((int)key2);
@@ -133,6 +155,7 @@ namespace AutoBot_v1._Bot
             {
                 ElapsedTimeAction(() =>
                 {
+                    _bufferOut[3] = 0;
                     _bufferOut[2] = Convert.ToByte((int)key1);
                     HIDDLLInterface.hidWriteEx(5638, 6536, ref _bufferOut[0]);
                     _bufferOut[2] = Convert.ToByte((int)key2);

@@ -54,6 +54,10 @@ namespace AutoBot_v1._Bot
                         {
                             Bot.Instance.PressMessage(data.Message);
                         }
+                        else if (data.Repeat > 0 && data.Keys.Length == 1)
+                        {
+                            Bot.Instance.Press(data.Keys[0], data.Repeat);
+                        }
                         else if (data.Keys.Length == 1 && !data.Pressed)
                         {
                             Bot.Instance.PressAndRelease(data.Keys[0]);
