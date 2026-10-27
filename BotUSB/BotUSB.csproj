@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>BotUSB</RootNamespace>
+    <AssemblyName>BotUSB</AssemblyName>
+    <ApplicationIcon>BotUSB.ico</ApplicationIcon>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationVisualStyles>true</ApplicationVisualStyles>
+    <ApplicationUseCompatibleTextRendering>false</ApplicationUseCompatibleTextRendering>
+    <TieredPGO>true</TieredPGO>
+
+    <Product>BotUSB</Product>
+    <Description>Drives the USBautoGAMES hardware keyboard/mouse stick from scripts over TCP.</Description>
+    <Copyright>Copyright © 2020-2026</Copyright>
+    <Version>2.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="BotUSB.ico" LogicalName="BotUSB.AppIcon.ico" />
+    <InternalsVisibleTo Include="BotUSB.Tests" />
+  </ItemGroup>
+
+</Project>

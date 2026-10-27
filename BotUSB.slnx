@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="BotUSB/BotUSB.csproj" />
+  <Project Path="BotUSB.Tests/BotUSB.Tests.csproj" />
+</Solution>
